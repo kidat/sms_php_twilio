@@ -4,7 +4,7 @@ require_once("parameters/parameters.php");
 
 $filename = RESPONSE_FILE;
 $response = RESPONSE_MESSAGE;
-$data = array($_POST['From'], $_POST['Body'], date('Y-m-d'), date('H:i:s'));
+$data = array($_REQUEST['From'], $_REQUEST['Body'], date('Y-m-d'), date('H:i:s'));
 
 if (file_exists($filename)) {
     $responses = fopen($filename, 'a');
