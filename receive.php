@@ -6,6 +6,7 @@ $filename = RESPONSE_FILE;
 $response = RESPONSE_MESSAGE;
 $data = array($_REQUEST['From'], $_REQUEST['Body'], date('Y-m-d'), date('H:i:s'));
 
+// Write the response to the file
 if (file_exists($filename)) {
     $responses = fopen($filename, 'a');
 } else {
@@ -16,6 +17,7 @@ if (file_exists($filename)) {
 fputcsv($responses, $data);
 fclose($responses);
 
+// XML response for Twilio's API
 header("content-type: text/xml");
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 

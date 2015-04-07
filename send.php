@@ -99,6 +99,11 @@ function send_message($numbers) {
     }
 }
 
+// Leave only numbers in number string
+function clean_number($number) {
+    return trim(preg_replace('/[^0-9]/','',$number));
+}
+
 // Removing anything that isn't a properly formatted phone number
 function real_phone_number($number) {
     $return = TRUE;
@@ -112,7 +117,9 @@ function real_phone_number($number) {
 $choice = read_stdin('Options: 1 for SMS blast, 2 for 1-on-1 message: ', array('1', '2'));
 
 switch ($choice) {
+    // MASS SMS STORM
     case 1:
+        // Get the numbers to send, from a local csv file
         $numbers = NULL;
         while ($numbers == NULL || !intval($numbers[0])) {
             $file_name = read_in_csv();
@@ -123,6 +130,7 @@ switch ($choice) {
         $removed = array();
         $orig_count = 0;
         foreach ($numbers as $key => $number) {
+            $number = clean_number($number);
             if (intval($number)) {
                 $orig_count++;
             }
@@ -131,13 +139,16 @@ switch ($choice) {
                 if (intval($number)) {
                     $removed[] = $number;
                 }
+            } else {
+                $numbers[$key] = $number;
             }
         }
 
+        // What to do, based on number of illegitimate numbers
         $removed_count = count($removed);
         if ($removed_count) {
             if ($removed_count == $orig_count) { // Return if there are no legitimate numbers to send to!
-                fwrite(STDOUT, "Stop it. There are no real numbers to send to. I'm done.\n");
+                fwrite(STDOUT, "Stop it. There are no real numbers to send to. I'm out.\n");
                 return;
             }
             fwrite(STDOUT, "Removed ".$removed_count." phone number(s) because they weren't really real:\n");
@@ -149,10 +160,11 @@ switch ($choice) {
         send_message($numbers);
         break;
 
+    // INDIVIDUAL SMS MESSAGE
     case 2:
         $number = NULL;
         while (!real_phone_number($number)) {
-            $number = read_stdin('Number to send message to: ', '');
+            $number = clean_number(read_stdin('Number to send message to: ', ''));
             if (!real_phone_number($number)) {
                 fwrite(STDOUT, "Sorry, that wasn't a real phone number. Try again.\n");
             }
