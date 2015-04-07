@@ -1,4 +1,5 @@
 <?php
+
 require_once("parameters/parameters.php");
 
 function read_stdin($prompt, $valid_inputs, $default = '') {
