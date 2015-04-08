@@ -113,6 +113,11 @@ function real_phone_number($number) {
     return $return;
 }
 
+// This is where we start. Set the max execution time to 0 if it is set to anything else
+if (ini_get('max_execution_time')) {
+    ini_set('max_execution_time', 0);
+}
+
 // Start w/ choice of mass blast or 1-1 message
 $choice = read_stdin('Options: 1 for SMS blast, 2 for 1-on-1 message: ', array('1', '2'));
 
@@ -121,7 +126,7 @@ switch ($choice) {
     case 1:
         // Get the numbers to send, from a local csv file
         $numbers = NULL;
-        while ($numbers == NULL || !intval($numbers[0])) {
+        while ($numbers == NULL) {
             $file_name = read_in_csv();
             $numbers = parse_csv($file_name);
         }
